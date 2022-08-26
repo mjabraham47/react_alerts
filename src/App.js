@@ -1,24 +1,35 @@
-import logo from './logo.svg';
 import './App.css';
+import { AlertManager, alertReducer } from './Components/Alerts/AlertManager.js';
+import AlertExample from './Components/Alerts/AlertExample';
+import { Grid } from '@mui/material';
+import { createContext, useReducer } from 'react';
+
+const initialState = { alerts: [] }
+
+export const AlertContext = createContext()
 
 function App() {
+  const [state, dispatch] = useReducer(
+    alertReducer,
+    initialState
+  );
+  const options = [
+    { value: 'error', text: 'Error' },
+    { value: 'warning', text: 'Warning' },
+    { value: 'info', text: 'Info' },
+    { value: 'success', text: 'Success' },
+  ];
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AlertContext.Provider value={{ state, dispatch }}>
+      <Grid container spacing={4}>
+        <Grid item md={8}>
+          <AlertExample options={options} />
+        </Grid>
+        <Grid item md={3}>
+          <AlertManager alerts={state.alerts} />
+        </Grid>
+      </Grid>
+    </AlertContext.Provider>
   );
 }
 
